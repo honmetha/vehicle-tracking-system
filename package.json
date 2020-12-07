@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server/index.js",
-    "heroku-postbuild": "npm install --prefix server && npm install --prefix client && npm run build -- prefix client"
+    "heroku-postbuild": "npm install --prefix server && npm install --prefix client && npm run build --prefix client"
   },
   "author": "Hon <dennis.mejen@gmail.com>",
   "license": "MIT"
