@@ -1,13 +1,16 @@
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import "./App.css";
-import NavigationBar from "./components/NavigationBar";
-import VehicleTable from "./components/VehicleTable";
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 
 function App() {
   return (
-    <div>
-      <NavigationBar />
-      <VehicleTable />
-    </div>
+    <BrowserRouter>
+      <Switch>
+        <Route exact path="/signup" component={Signup} />
+        <Route path="/" component={Login} />
+      </Switch>
+    </BrowserRouter>
   );
 }
 
