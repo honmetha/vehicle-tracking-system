@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": "jayjayjay",
-    "database": "database_development",
+    "database": "vehicle-tracking-db",
     "host": "35.240.160.217",
     "dialect": "mysql"
   },
