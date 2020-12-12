@@ -12,6 +12,7 @@ import Grid from "@material-ui/core/Grid";
 // import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import { useHistory } from "react-router-dom";
 
 function Copyright() {
   return (
@@ -59,7 +60,8 @@ const Login = () => {
       margin: theme.spacing(3, 0, 2),
     },
   }));
-
+  
+  const history = useHistory();
   const classes = useStyles();
 
   return (
@@ -107,6 +109,7 @@ const Login = () => {
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={() => history.push("/vehicles")}
             >
               Sign In
             </Button>
