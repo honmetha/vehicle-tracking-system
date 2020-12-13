@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     "Position",
     {
       latitude: DataTypes.STRING,
-      longtitude: DataTypes.STRING,
+      longitude: DataTypes.STRING,
     },
     {
       tableName: "positions",
