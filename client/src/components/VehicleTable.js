@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -17,6 +18,7 @@ const useStyles = makeStyles({
 });
 
 const VehicleTable = ({ rows = [] }) => {
+  const history = useHistory();
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(12);
@@ -46,7 +48,7 @@ const VehicleTable = ({ rows = [] }) => {
               .map((row) => (
                 <TableRow key={row.id}>
                   <TableCell component="th" scope="row">
-                    {row.id}
+                    {row.name}
                   </TableCell>
                   <TableCell align="right">
                     <Button
@@ -54,6 +56,7 @@ const VehicleTable = ({ rows = [] }) => {
                       color="primary"
                       size="small"
                       style={{ backgroundColor: "#2196F3" }}
+                      onClick={() => history.push("/vehicletimeline")}
                     >
                       View Timeline
                     </Button>

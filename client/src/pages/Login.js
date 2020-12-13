@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -13,6 +13,8 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
+import Axios from "axios";
+import localStorageService from "../utilities/localStorage";
 
 function Copyright() {
   return (
@@ -27,42 +29,65 @@ function Copyright() {
   );
 }
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    height: "100vh",
+  },
+  image: {
+    backgroundImage: "url(https://source.unsplash.com/random)",
+    backgroundRepeat: "no-repeat",
+    backgroundColor:
+      theme.palette.type === "light"
+        ? theme.palette.grey[50]
+        : theme.palette.grey[900],
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  },
+  paper: {
+    margin: theme.spacing(8, 4),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: "100%", // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+}));
+
 const Login = () => {
-  const useStyles = makeStyles((theme) => ({
-    root: {
-      height: "100vh",
-    },
-    image: {
-      backgroundImage: "url(https://source.unsplash.com/random)",
-      backgroundRepeat: "no-repeat",
-      backgroundColor:
-        theme.palette.type === "light"
-          ? theme.palette.grey[50]
-          : theme.palette.grey[900],
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-    },
-    paper: {
-      margin: theme.spacing(8, 4),
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-    },
-    avatar: {
-      margin: theme.spacing(1),
-      backgroundColor: theme.palette.secondary.main,
-    },
-    form: {
-      width: "100%", // Fix IE 11 issue.
-      marginTop: theme.spacing(1),
-    },
-    submit: {
-      margin: theme.spacing(3, 0, 2),
-    },
-  }));
-  
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const history = useHistory();
   const classes = useStyles();
+
+  useEffect(() => {
+    const checkUserRole = async () => {
+      const res = await Axios.get("/getuser");
+      if (res.data.role === "admin") history.push("/vehicles");
+      if (res.data.role === "user") history.push("/connecting");
+    };
+    checkUserRole();
+  }, [history]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const response = await Axios.post("http://localhost:5000/signin", {
+      username,
+      password,
+    });
+    if (response.data.error) return setError(response.data.error);
+    localStorageService.setToken(response.data.token);
+    history.push("/connecting");
+  };
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -76,7 +101,8 @@ const Login = () => {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <form className={classes.form} noValidate>
+          <form className={classes.form} noValidate onSubmit={handleSubmit}>
+            {error && <span>{error}</span>}
             <TextField
               variant="outlined"
               margin="normal"
@@ -87,6 +113,7 @@ const Login = () => {
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={(e) => setUsername(e.target.value)}
             />
             <TextField
               variant="outlined"
@@ -98,6 +125,7 @@ const Login = () => {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={(e) => setPassword(e.target.value)}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -109,7 +137,6 @@ const Login = () => {
               variant="contained"
               color="primary"
               className={classes.submit}
-              onClick={() => history.push("/vehicles")}
             >
               Sign In
             </Button>

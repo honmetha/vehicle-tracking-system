@@ -1,4 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
+import Axios from "axios";
+import { useHistory } from "react-router-dom";
+import localStorageService from "../utilities/localStorage";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -27,6 +30,12 @@ function Copyright() {
 }
 
 const Signup = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
+  const [error, setError] = useState("");
+  const history = useHistory();
+
   const useStyles = makeStyles((theme) => ({
     paper: {
       marginTop: theme.spacing(8),
@@ -46,8 +55,20 @@ const Signup = () => {
       margin: theme.spacing(3, 0, 2),
     },
   }));
-
   const classes = useStyles();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const response = await Axios.post("http://localhost:5000/signup", {
+      username,
+      password,
+      password2,
+    });
+    if (response.data.error) return setError(response.data.error);
+    localStorageService.setToken(response.data.token);
+    history.push("/vehicles");
+  };
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -56,8 +77,9 @@ const Signup = () => {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <Grid container spacing={2}>
+            {error && <span>{error}</span>}
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
@@ -67,6 +89,7 @@ const Signup = () => {
                 label="Username"
                 name="username"
                 autoComplete="username"
+                onChange={(e) => setUsername(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -79,6 +102,7 @@ const Signup = () => {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={(e) => setPassword(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -90,6 +114,7 @@ const Signup = () => {
                 label="Confirm Password"
                 type="password"
                 id="confirmPassword"
+                onChange={(e) => setPassword2(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>

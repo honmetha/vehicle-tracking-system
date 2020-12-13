@@ -9,7 +9,9 @@ const Vehicles = () => {
 
   useEffect(() => {
     const fetchVehicles = async () => {
-      const result = await Axios.get("http://localhost:5000/vehicles");
+      const result = await Axios.get(
+        "http://localhost:5000/vehicles"
+      );
       setVehicles(result.data);
     };
 
